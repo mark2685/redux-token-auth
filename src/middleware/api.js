@@ -54,15 +54,15 @@ export default store => next => action => {
     options.headers = Object.assign({}, getAuthHeaders(store.getState().tokens, options.headers))
   }
 
-  console.log('state ', store.getState())
-
-  console.log(options.headers)
-
 
   return fetch(url, options)
     .then((response) => {
       next(actionWith({ type: successType, payload: response.data }))
     }, (reason) => {
-      next(actionWith({ type: failureType, error: reason }))
+      if (reason.response.status === 401) {
+        // Refresh token flow
+      } else {
+        next(actionWith({ type: failureType, error: reason }))
+      }
     })
 }
