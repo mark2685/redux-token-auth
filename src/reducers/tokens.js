@@ -10,8 +10,8 @@ export default function tokens (state = initialState, action) {
     case actions.AUTHENTICATE_SUCCESS:
       return {
         ...state,
-        accessToken: action.accessToken,
-        refreshToken: action.refreshToken
+        accessToken: action.payload.accessToken,
+        refreshToken: action.payload.refreshToken
       }
     case actions.AUTHENTICATE_CLEAR:
       return {

@@ -37,8 +37,8 @@ export default store => next => action => {
 
   return fetch(url, method, data)
     .then((response) => {
-      next(actionWith({ type: successType }))
+      next(actionWith({ type: successType, payload: response.data }))
     }, (reason) => {
-      next(actionWith({ type: failureType }))
+      next(actionWith({ type: failureType, error: reason }))
     })
 }
