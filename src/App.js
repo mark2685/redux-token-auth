@@ -1,16 +1,14 @@
 import React, { Component } from 'react'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import logo from './logo.svg'
-
 import { signIn } from './actions/sign-in'
 import './App.css'
+import logo from './logo.svg'
 
 class LoginButton extends Component {
   submit () {
     const credentials = {
-      "email": "sample string 1",
-      "password": "sample string 2"
+      "email": "mark2685@gmail.com",
+      "password": "Testpass1"
     }
 
     this.props.signIn(credentials)
@@ -60,7 +58,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    signIn: bindActionCreators(signIn, dispatch)
+    signIn: data => dispatch(signIn(data))
   }
 }
 

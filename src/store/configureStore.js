@@ -1,4 +1,5 @@
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
+import thunk from 'redux-thunk'
 import api from '../middleware/api'
 import reducers from '../reducers'
 
@@ -6,6 +7,8 @@ export default (preloadedState) => {
   return createStore(
     reducers,
     preloadedState,
-    applyMiddleware(api)
+    compose(
+      applyMiddleware(thunk, api)
+    )
   )
 }

@@ -33,8 +33,6 @@ export default store => next => action => {
 
   const [ requestType, successType, failureType ] = types
 
-  console.log(`requestType ${requestType}, successType ${successType}, failureType ${failureType}`)
-
   const actionWith = (data) => {
     const finalAction = Object.assign({}, action, data)
     delete finalAction[CALL_API]
@@ -43,7 +41,10 @@ export default store => next => action => {
 
   next(actionWith({ type: requestType }))
 
-  console.log(successType, failureType)
-
-  return fetch(url, method, data) // TODO: Setup then's...
+  return fetch(url, method, data)
+    .then((response) => {
+      next(actionWith({ type: successType }))
+    }, (reason) => {
+      next(actionWith({ type: failureType }))
+    })
 }
