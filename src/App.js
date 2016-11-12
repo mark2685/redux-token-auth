@@ -7,14 +7,14 @@ import logo from './logo.svg'
 class LoginButton extends Component {
   submit () {
     const credentials = {
-      "email": "mark2685@gmail.com",
-      "password": "Testpass1"
+      email: 'mark2685@gmail.com',
+      password: 'Testpass1'
     }
 
     this.props.signIn(credentials)
   }
   render () {
-    return (<button type="submit" onClick={this.submit.bind(this)}>Log In</button>)
+    return (<button type='submit' onClick={this.submit.bind(this)}>Log In</button>)
   }
 }
 
@@ -23,15 +23,13 @@ class LogoutButton extends Component {
     this.props.signOut()
   }
   render () {
-    return (<button type="submit" onClick={this.submit.bind(this)}>Log Out</button>)
+    return (<button type='submit' onClick={this.submit.bind(this)}>Log Out</button>)
   }
 }
 
 class App extends Component {
   render () {
     let authStateButton
-
-    console.log(this.props)
 
     if (this.props.auth.valid) {
       authStateButton = <LogoutButton signOut={this.props.signOut} />

@@ -1,7 +1,6 @@
 import fetch from 'isomorphic-fetch'
 // import Promise from 'es6-promise'
 
-
 export const addAuthorizationHeader = (accessToken, headers) => {
   return Object.assign({}, headers, {
     Authorization: `Bearer ${accessToken}`

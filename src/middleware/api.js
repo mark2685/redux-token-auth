@@ -5,10 +5,6 @@ export const CALL_API = Symbol('Authenticated API Request')
 export default store => next => action => {
   const callAPI = action[CALL_API]
 
-  console.log('action ', action)
-
-  console.log('callAPI ', callAPI)
-
   if (typeof callAPI === 'undefined') {
     return next(action)
   }
@@ -16,8 +12,6 @@ export default store => next => action => {
   const httpMethods = [ 'POST', 'GET', 'PUT', 'DELETE' ]
 
   const { types, url, method, data } = callAPI
-
-  console.log('boom! types (', types, '), url (', url, ')')
 
   if (!types || !Array.isArray(types) || types.length !== 3) {
     throw new Error('Expected an array of three action types (ex. `types: [STATE, SUCCESS, ERROR]`).')
