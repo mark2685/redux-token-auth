@@ -1,12 +1,12 @@
-import { AUTHENTICATE, AUTHENTICATE_SUCCESS, AUTHENTICATE_ERROR } from './authenticate'
+import { AUTHENTICATE_CLEAR } from './authenticate'
 
 import { CALL_API } from '../middleware/api'
 
 const fetchSignOut = user => {
   return {
     [CALL_API]: {
-      types: [AUTHENTICATE, AUTHENTICATE_SUCCESS, AUTHENTICATE_ERROR],
-      endpoint: '',
+      types: [AUTHENTICATE_CLEAR, AUTHENTICATE_CLEAR, AUTHENTICATE_CLEAR],
+      url: 'http://dentalconnect.mouthful.la/api/account/logout',
       method: 'POST'
     }
   }

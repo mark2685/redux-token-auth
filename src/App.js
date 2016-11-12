@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { signIn } from './actions/sign-in'
+import { signOut } from './actions/sign-out'
 import './App.css'
 import logo from './logo.svg'
 
@@ -56,7 +57,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    signIn: data => dispatch(signIn(data))
+    signIn: data => dispatch(signIn(data)),
+    signOut: () => dispatch(signOut())
   }
 }
 
