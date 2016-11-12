@@ -2,10 +2,14 @@ import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import configureStore from './store/configureStore'
+import { loadState, syncLocalStorageWithStore } from './utils/local-storage'
 import App from './App'
 import './index.css'
 
-const store = configureStore({})
+const persistedState = loadState();
+const store = configureStore(persistedState)
+
+syncLocalStorageWithStore(store)
 
 render(
   <Provider store={store}>

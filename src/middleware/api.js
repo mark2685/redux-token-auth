@@ -1,4 +1,5 @@
 import fetch from '../utils/fetch'
+import { getAuthHeaders } from '../utils/auth'
 
 export const CALL_API = Symbol('Authenticated API Request')
 
@@ -35,7 +36,30 @@ export default store => next => action => {
 
   next(actionWith({ type: requestType }))
 
-  return fetch(url, method, data)
+  // Should auth headers be set here?
+
+  const options = {
+    method,
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  if (store.getState().tokens) {
+    if (!options.headers) {
+      options.headers = {}
+    }
+
+    options.headers = Object.assign({}, getAuthHeaders(store.getState().tokens, options.headers))
+  }
+
+  console.log('state ', store.getState())
+
+  console.log(options.headers)
+
+
+  return fetch(url, options)
     .then((response) => {
       next(actionWith({ type: successType, payload: response.data }))
     }, (reason) => {

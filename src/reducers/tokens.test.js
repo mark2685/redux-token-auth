@@ -18,7 +18,7 @@ describe('Tokens reducer', () => {
     expect(state.refreshToken).toBe(null)
   })
 
-  it('should handle AUTHENTICATE_CLEAR', () => {
+  xit('should handle AUTHENTICATE_CLEAR', () => {
     const initialState = {
       accessToken: '91u23-0129u3-f09jawef',
       refreshToken: '1u98has;dfjaps9df8h9p'

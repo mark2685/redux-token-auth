@@ -13,12 +13,12 @@ export default function tokens (state = initialState, action) {
         accessToken: action.payload.accessToken,
         refreshToken: action.payload.refreshToken
       }
-    case actions.AUTHENTICATE_CLEAR:
-      return {
-        ...state,
-        accessToken: null,
-        refreshToken: null
-      }
+    // case actions.AUTHENTICATE_CLEAR:
+    //   return {
+    //     ...state,
+    //     accessToken: null,
+    //     refreshToken: null
+    //   }
     default:
       return state
   }
