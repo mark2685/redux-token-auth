@@ -36,8 +36,6 @@ export default store => next => action => {
 
   next(actionWith({ type: requestType }))
 
-  // Should auth headers be set here?
-
   const options = {
     method,
     body: JSON.stringify(data),
@@ -53,7 +51,6 @@ export default store => next => action => {
 
     options.headers = Object.assign({}, getAuthHeaders(store.getState().tokens, options.headers))
   }
-
 
   return fetch(url, options)
     .then((response) => {

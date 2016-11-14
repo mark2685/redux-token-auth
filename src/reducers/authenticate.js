@@ -1,4 +1,5 @@
-import * as actions from '../actions/authenticate'
+import { AUTHENTICATE, AUTHENTICATE_SUCCESS, AUTHENTICATE_ERROR } from '../actions/authenticate'
+import { SIGNOUT_SUCCESS, SIGNOUT_ERROR } from '../actions/sign-out'
 
 const initialState = {
   loading: false,
@@ -8,26 +9,40 @@ const initialState = {
 
 export default function authenticate (state = initialState, action) {
   switch (action.type) {
-    case actions.AUTHENTICATE:
+    case AUTHENTICATE:
       return {
         ...state,
         loading: true,
         valid: false,
         errors: null
       }
-    case actions.AUTHENTICATE_SUCCESS:
+    case AUTHENTICATE_SUCCESS:
       return {
         ...state,
         loading: false,
         valid: true,
         errors: null
       }
-    case actions.AUTHENTICATE_ERROR:
+    case AUTHENTICATE_ERROR:
       return {
         ...state,
         loading: false,
-        errors: 'Invalid token',
-        valid: false
+        valid: false,
+        errors: 'Invalid token'
+      }
+    case SIGNOUT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        valid: false,
+        errors: null
+      }
+    case SIGNOUT_ERROR:
+      return {
+        ...state,
+        loading: false,
+        valid: false,
+        errors: null
       }
     default:
       return state

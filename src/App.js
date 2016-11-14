@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { signIn } from './actions/sign-in'
 import { signOut } from './actions/sign-out'
+import { authRequest } from './actions/auth-action'
 import './App.css'
 import logo from './logo.svg'
 
@@ -19,6 +20,15 @@ class LoginButton extends Component {
   }
 }
 
+class TestAuthButton extends Component {
+  submit () {
+    this.props.authRequest()
+  }
+  render () {
+    return (<button type='submit' onClick={this.submit.bind(this)}>Test authentication</button>)
+  }
+}
+
 class LogoutButton extends Component {
   submit () {
     this.props.signOut()
@@ -33,7 +43,12 @@ class App extends Component {
     let authStateButton
 
     if (this.props.auth.valid) {
-      authStateButton = <LogoutButton signOut={this.props.signOut} />
+      authStateButton = (
+        <div>
+          <LogoutButton signOut={this.props.signOut} />
+          <TestAuthButton authRequest={this.props.authRequest} />
+        </div>
+      )
     } else {
       authStateButton = <LoginButton signIn={this.props.signIn} />
     }
@@ -58,7 +73,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     signIn: data => dispatch(signIn(data)),
-    signOut: () => dispatch(signOut())
+    signOut: () => dispatch(signOut()),
+    authRequest: () => dispatch(authRequest())
   }
 }
 
