@@ -1,13 +1,6 @@
-import Promise from 'es6-promise'
+require('es6-promise')
+
 import fetch from './fetch'
-/**
- * TODO:
- * Implement getAuthHeaders
- * Implement  cacheAuthRequest
- * Implement  retryCachedRequests
- * Implement  failCachedRequests
- * Implement  isRefreshingTokens
- */
 
 export default class AuthUtility {
   constructor({ headers, cache }) {
@@ -59,39 +52,17 @@ export default class AuthUtility {
   get headers() {
     return this._headers
   }
-  // cacheAction(url, options) {
-  //   if (this.cache[url]) {
-  //     this.cache[url] = url
-  //   }
-  //
-  //   this.cache[url].push({ url, options })
-  // }
-  // cacheAuthRequest(url, options) {
-  //   if (this.cache[url]) {
-  //     this.cache[url] = url
-  //   }
-  //
-  //   this.cache[url].push({ url, options })
-  // }
   cacheAuthAction(action) {
-    console.log('cacheAuthAction ', action)
     action.types[0] = `${action.types[0]}_CACHE`
     this.cache.push(action)
+  }
+  clearCache() {
+    this.cache = []
   }
   fetch(url, options) {
     if (!options.headers) {
       options.headers = this.headers
     }
     return fetch(url, options)
-  }
-  refetchCachedRequests(calback) {
-    this.cache.forEach(req => {
-      this.fetch(req.url, req.options)
-    })
-  }
-  failCachedRequests(callback) {
-    this.cache.forEach(req => {
-
-    })
   }
 }

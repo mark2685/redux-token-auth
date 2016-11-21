@@ -1,4 +1,5 @@
-import Promise from 'bluebird'
+require('es6-promise')
+
 import fetch from 'isomorphic-fetch'
 
 export default (url, options = {}) => {
@@ -13,7 +14,6 @@ export default (url, options = {}) => {
   }
 
   const parseJSON = (response) => {
-    console.log(response)
     return response.json()
   }
 

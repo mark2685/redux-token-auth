@@ -31,13 +31,14 @@ export default function tokens (state = initialState, action) {
         ...state,
         accessToken: action.payload.accessToken,
         refreshToken: action.payload.refreshToken,
-        isRefreshing: true
+        isRefreshing: false
       }
     case REFRESH_TOKEN_ERROR:
       return {
         ...state,
         accessToken: null,
-        refreshToken: null
+        refreshToken: null,
+        isRefreshing: false
       }
     case SIGNOUT:
       return {

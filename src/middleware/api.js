@@ -1,14 +1,6 @@
-import fetch from '../utils/fetch'
 import AuthUtility from '../utils/AuthUtility'
 import {
-  getAuthHeaders,
-  cacheAuthRequest,
-  retryCachedRequests,
-  failCachedRequests,
-  isRefreshingTokens
-} from '../utils/auth'
-import {
-  refreshToken,
+  refreshAuthTokens,
   cachedRequestsProceed,
   cachedRequestsFail,
   REFRESH_TOKEN,
@@ -64,7 +56,6 @@ const middleware = store => next => action => {
   }
 
   if (auth.isRefreshingTokens !== isRefreshing) {
-    console.log('isRefreshing (', isRefreshing, ')')
     auth.isRefreshingTokens = isRefreshing
   }
 
@@ -75,32 +66,34 @@ const middleware = store => next => action => {
 
 
   if (types.indexOf(REFRESH_TOKEN) === -1 && auth.isRefreshingTokens) {
-    console.log(auth.isRefreshingTokens)
-    auth.cacheAuthAction(action)
+    auth.cacheAuthAction(callAPI)
 
     return
   }
 
   return auth.fetch(url, options)
     .then(response => {
-      const successAction = { type: successType, payload: response.data }
+
+      next(actionWith({ type: successType, payload: response.data }))
 
       if (successType === REFRESH_TOKEN_SUCCESS) {
-        auth.isRefreshingTokens = false
         store.dispatch(cachedRequestsProceed(auth.cache))
       }
-      next(actionWith(successAction))
     }, reason => {
       const failureAction = { type: failureType, error: reason }
 
       if (failureType === REFRESH_TOKEN_ERROR) {
-        auth.isRefreshingTokens = false
-        store.dispatch(cachedRequestsFail(auth.cache))
         next(actionWith(action, failureAction))
+
+        auth.clearCache()
+
+        store.dispatch(cachedRequestsFail(Object.assign({}, auth.cache)))
+
+        auth.clearCache()
       } else if (reason.response.status === 401) {
-        const [ successType, failureType ] = types
-        auth.cacheAuthAction(action)
-        store.dispatch(refreshToken(refreshToken))
+        auth.cacheAuthAction(callAPI)
+
+        store.dispatch(refreshAuthTokens(refreshToken))
       } else {
         next(actionWith(action, failureAction))
       }
