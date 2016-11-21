@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { signIn } from './actions/sign-in'
-import { signOut } from './actions/sign-out'
-import { authRequest } from './actions/auth-action'
+import { signIn, signOut, testAuthRequest } from './actions/authActions'
 import './App.css'
 import logo from './logo.svg'
 
@@ -12,7 +10,6 @@ class LoginButton extends Component {
       email: 'mark2685@gmail.com',
       password: 'Testpass1'
     }
-
     this.props.signIn(credentials)
   }
   render () {
@@ -74,7 +71,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     signIn: data => dispatch(signIn(data)),
     signOut: () => dispatch(signOut()),
-    authRequest: () => dispatch(authRequest())
+    authRequest: () => dispatch(testAuthRequest())
   }
 }
 

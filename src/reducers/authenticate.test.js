@@ -1,7 +1,7 @@
 /* global describe it expect */
 
 import reducer from './authenticate'
-import * as actions from '../actions/authenticate'
+import * as actions from '../actions/authActions'
 
 describe('Authenticate reducer', () => {
   it('should have an initial state', () => {

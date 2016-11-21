@@ -1,5 +1,12 @@
-import { AUTHENTICATE, AUTHENTICATE_SUCCESS, AUTHENTICATE_ERROR } from '../actions/authenticate'
-import { SIGNOUT_SUCCESS, SIGNOUT_ERROR } from '../actions/sign-out'
+import {
+  AUTHENTICATE,
+  AUTHENTICATE_SUCCESS,
+  AUTHENTICATE_ERROR,
+  REFRESH_TOKEN,
+  REFRESH_TOKEN_SUCCESS,
+  REFRESH_TOKEN_ERROR,
+  SIGNOUT
+} from '../actions/authActions'
 
 const initialState = {
   loading: false,
@@ -12,9 +19,7 @@ export default function authenticate (state = initialState, action) {
     case AUTHENTICATE:
       return {
         ...state,
-        loading: true,
-        valid: false,
-        errors: null
+        loading: true
       }
     case AUTHENTICATE_SUCCESS:
       return {
@@ -30,19 +35,27 @@ export default function authenticate (state = initialState, action) {
         valid: false,
         errors: 'Invalid token'
       }
-    case SIGNOUT_SUCCESS:
+    case REFRESH_TOKEN:
       return {
         ...state,
-        loading: false,
-        valid: false,
-        errors: null
+        loading: true
       }
-    case SIGNOUT_ERROR:
+    case REFRESH_TOKEN_SUCCESS:
       return {
         ...state,
         loading: false,
-        valid: false,
-        errors: null
+        valid: true
+      }
+    case REFRESH_TOKEN_ERROR:
+      return {
+        ...state,
+        loading: false,
+        valid: false
+      }
+    case SIGNOUT:
+      return {
+        ...state,
+        valid: false
       }
     default:
       return state

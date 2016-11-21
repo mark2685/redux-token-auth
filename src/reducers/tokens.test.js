@@ -1,7 +1,7 @@
 /* global describe it expect */
 
 import reducer from './tokens'
-import { SIGNOUT_SUCCESS } from '../actions/sign-out'
+import { SIGNOUT } from '../actions/authActions'
 
 describe('Tokens reducer', () => {
   it('should have an initial state', () => {
@@ -24,7 +24,7 @@ describe('Tokens reducer', () => {
       refreshToken: '1u98has;dfjaps9df8h9ppoP7CqUvh-56mFRJd1X4dCOhWN8RFmg9k37Af'
     }
     const action = {
-      type: SIGNOUT_SUCCESS
+      type: SIGNOUT
     }
     expect(reducer(initialState, action)).toEqual({
       accessToken: null,

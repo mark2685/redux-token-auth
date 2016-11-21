@@ -1,5 +1,4 @@
-/* global localStorage */
-'use strict'
+
 export const loadState = () => {
   try {
     const serializedState = localStorage.getItem('state')
@@ -27,6 +26,8 @@ export const saveState = (state) => {
 
 export const syncLocalStorageWithStore = (store) => {
   store.subscribe(() => {
+    console.log('subscrie ', store.getState())
+
     saveState({
       tokens: store.getState().tokens
     })

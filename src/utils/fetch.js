@@ -1,5 +1,8 @@
+import Promise from 'es6-promise'
 import fetch from 'isomorphic-fetch'
-// import Promise from 'es6-promise'
+
+const requestCache = []
+let isRefreshingTokens = false
 
 export default (url, options = {}) => {
   const checkStatus = (response) => {
@@ -17,6 +20,6 @@ export default (url, options = {}) => {
   }
 
   return fetch(url, options)
-  .then(checkStatus)
-  .then(parseJSON)
+    .then(checkStatus)
+    .then(parseJSON)
 }
