@@ -59,33 +59,30 @@ export default class AuthUtility {
   get headers() {
     return this._headers
   }
-  cacheAction(url, options) {
-    if (this.cache[url]) {
-      this.cache[url] = url
-    }
-
-    this.cache[url].push({ url, options })
-  }
-  cacheAuthRequest(url, options) {
-    if (this.cache[url]) {
-      this.cache[url] = url
-    }
-
-    this.cache[url].push({ url, options })
+  // cacheAction(url, options) {
+  //   if (this.cache[url]) {
+  //     this.cache[url] = url
+  //   }
+  //
+  //   this.cache[url].push({ url, options })
+  // }
+  // cacheAuthRequest(url, options) {
+  //   if (this.cache[url]) {
+  //     this.cache[url] = url
+  //   }
+  //
+  //   this.cache[url].push({ url, options })
+  // }
+  cacheAuthAction(action) {
+    console.log('cacheAuthAction ', action)
+    action.types[0] = `${action.types[0]}_CACHE`
+    this.cache.push(action)
   }
   fetch(url, options) {
-    return new Promise((resolve, reject) => {
-      if (!options.headers) {
-        options.headers = this.headers
-      }
-      return fetch(url, options)
-        .then(response => resolve, reason => {
-          if (reason.response.status === 401) {
-            this.cacheAuthRequest(url, options)
-          }
-          reject(reason)
-        })
-    })
+    if (!options.headers) {
+      options.headers = this.headers
+    }
+    return fetch(url, options)
   }
   refetchCachedRequests(calback) {
     this.cache.forEach(req => {
@@ -94,7 +91,7 @@ export default class AuthUtility {
   }
   failCachedRequests(callback) {
     this.cache.forEach(req => {
-      next
+
     })
   }
 }

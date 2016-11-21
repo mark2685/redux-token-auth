@@ -68,6 +68,35 @@ export const refreshAuthToken = (token) => {
   }
 }
 
+// = Refetch Requests
+export const REFETCH_REQUESTS = 'REFETCH_REQUESTS'
+export const REFETCH_REQUESTS_SUCCESS = 'REFETCH_REQUESTS_SUCCESS'
+export const REFETCH_REQUESTS_ERROR = 'REFETCH_REQUESTS_ERROR'
+
+const fetchCachedActions = request => {
+  return {
+    [CALL_API]: {
+      ...request
+    }
+  }
+}
+
+export const cachedRequestsProceed = requests => {
+  return (dispatch, getState) => {
+    requests.forEach(action => {
+      return dispatch(fetchCachedActions(action))
+    })
+  }
+}
+
+export const cachedRequestsFail = requests => {
+  // return (dispatch, getState) => {
+  //   requests.forEach(action => {
+  //     return dispatch(fetchCachedActions(action))
+  //   })
+  // }
+}
+
 // = Sign Out
 export const SIGNOUT = 'SIGNOUT'
 export const SIGNOUT_SUCCESS = 'SIGNOUT_SUCCESS'
