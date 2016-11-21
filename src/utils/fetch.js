@@ -1,21 +1,19 @@
-import Promise from 'es6-promise'
+import Promise from 'bluebird'
 import fetch from 'isomorphic-fetch'
-
-const requestCache = []
-let isRefreshingTokens = false
 
 export default (url, options = {}) => {
   const checkStatus = (response) => {
     if (response.status >= 200 && response.status < 300) {
       return response
     } else {
-      var error = new Error(response.statusText)
+      const error = new Error(response.statusText)
       error.response = response
       throw error
     }
   }
 
   const parseJSON = (response) => {
+    console.log(response)
     return response.json()
   }
 

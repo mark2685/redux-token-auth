@@ -1,4 +1,5 @@
-import { Header } from 'isomorphic-fetch'
+import Promise from 'es6-promise'
+import fetch from './fetch'
 /**
  * TODO:
  * Implement getAuthHeaders
@@ -9,8 +10,8 @@ import { Header } from 'isomorphic-fetch'
  */
 
 export default class AuthUtility {
-  constructor(headers = {}) {
-    this.cache = []
+  constructor({ headers, cache }) {
+    this.cache = cache
 
     this.headers = headers
   }
@@ -36,17 +37,64 @@ export default class AuthUtility {
   get accessToken() {
     return this._accessToken
   }
+  set refreshToken(token) {
+    this._refreshToken = token
+  }
+  get refreshToken() {
+    return this._refreshToken
+  }
+  set tokens({ accessToken, refreshToken }) {
+    this.accessToken = accessToken
+    this.refreshToken = refreshToken
+  }
+  get tokens() {
+    return Object.assign({}, {
+      accessToken: this.accessToken,
+      refreshToken: this.refreshToken
+    })
+  }
   set headers(headers = { 'Content-Type': 'application/json' }) {
     this._headers = headers
   }
   get headers() {
     return this._headers
   }
-  cacheAction(request) {
-    if (this.cache[request.url]) {
-      this.cache[request.url] = request.url
-      this.cache[request.url].push()
+  cacheAction(url, options) {
+    if (this.cache[url]) {
+      this.cache[url] = url
     }
-    this.cache
+
+    this.cache[url].push({ url, options })
+  }
+  cacheAuthRequest(url, options) {
+    if (this.cache[url]) {
+      this.cache[url] = url
+    }
+
+    this.cache[url].push({ url, options })
+  }
+  fetch(url, options) {
+    return new Promise((resolve, reject) => {
+      if (!options.headers) {
+        options.headers = this.headers
+      }
+      return fetch(url, options)
+        .then(response => resolve, reason => {
+          if (reason.response.status === 401) {
+            this.cacheAuthRequest(url, options)
+          }
+          reject(reason)
+        })
+    })
+  }
+  refetchCachedRequests(calback) {
+    this.cache.forEach(req => {
+      this.fetch(req.url, req.options)
+    })
+  }
+  failCachedRequests(callback) {
+    this.cache.forEach(req => {
+      next
+    })
   }
 }

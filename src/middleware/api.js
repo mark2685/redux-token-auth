@@ -7,12 +7,22 @@ import {
   failCachedRequests,
   isRefreshingTokens
 } from '../utils/auth'
-import { refreshToken, REFRESH_TOKEN } from '../actions/authActions'
+import {
+  refreshToken,
+  REFRESH_TOKEN,
+  REFRESH_TOKEN_SUCCESS,
+  REFRESH_TOKEN_ERROR
+} from '../actions/authActions'
+
 export const CALL_API = Symbol('Authenticated API Request')
 
-const auth = new AuthUtility()
+const authConfig = {
+  headers: { 'Content-Type': 'application/json' }
+}
 
-export default store => next => action => {
+const auth = new AuthUtility(authConfig)
+
+const middleware = store => next => action => {
   const callAPI = action[CALL_API]
 
   if (typeof callAPI === 'undefined') {
@@ -37,19 +47,18 @@ export default store => next => action => {
 
   const [ requestType, successType, failureType ] = types
 
-  const actionWith = (data) => {
+  const actionWith = (action, data) => {
     const finalAction = Object.assign({}, action, data)
     delete finalAction[CALL_API]
     return finalAction
   }
 
-  next(actionWith({ type: requestType }))
+  next(actionWith(action, { type: requestType }))
 
   const { accessToken, refreshToken, isRefreshing } = store.getState().tokens
 
-  if (types.indexOf(REFRESH_TOKEN) === -1 && isRefreshing) {
-    // Create
-    cacheAuthRequest(callAPI)
+  if (accessToken !== null && auth.accessToken !== accessToken) {
+    auth.tokens = { accessToken, refreshToken }
   }
 
   const options = {
@@ -57,30 +66,39 @@ export default store => next => action => {
     body: JSON.stringify(data)
   }
 
-  options.headers = auth.headers
+  let successAction = { type: successType, payload: response.data }
+  const failureAction = { type: failureType, error: reason }
 
-  // if (accessToken) {
-  //   if (!options.headers) {
-  //     options.headers = {}
-  //   }
-  //   options.headers = Object.assign({}, getAuthHeaders(accessToken, options.headers))
-  // }
+  if (requestType === REFRESH_TOKEN) {
+    auth.isRefreshingTokens = true
+  } else if (types.indexOf(REFRESH_TOKEN) === -1 && auth.isRefreshingTokens) {
+    auth.cacheAuthRequest(url, options)
+    cacheAuthRequest(callAPI)
+  }
 
-  return fetch(url, options)
-    .then((response) => {
-      if (isRefreshing && types.indexOf(REFRESH_TOKEN) !== -1) {
-        retryCachedRequests()
-      }
-      next(actionWith({ type: successType, payload: response.data }))
-    }, (reason) => {
-      if (reason.response.status === 401 && refreshToken) {
-        cacheAuthRequest(url, options)
-        store.dispatch(refreshToken(refreshToken))
-      } else if (isRefreshing && types.indexOf(REFRESH_TOKEN) !== -1) {
-        failCachedRequests()
-        next(actionWith({ type: failureType, error: reason }))
+  return auth.fetch(url, options)
+    .then(response => {
+      if (successType === REFRESH_TOKEN_SUCCESS) {
+        // Refresh Token Succeeded, clear out the old requests with successType
+        auth.isRefreshingTokens = false
+        successAction.payload = Object.assign({}, successAction.payload, {
+          requests: auth.cache
+        })
+
       } else {
-        next(actionWith({ type: failureType, error: reason }))
+        next(actionWith(successAction))
+      }
+    }, reason => {
+      if (failureType === REFRESH_TOKEN_ERROR) {
+        auth.failCachedRequests(next)
+        // REFRESH TOKEN FAILED, clear out the old requests with failuretype
+        next(actionWith(action, failureAction))
+      } else if (reason.response.status === 401) {
+        store.dispatch(refreshToken(refreshToken))
+      } else {
+        next(actionWith(action, failureAction))
       }
     })
 }
+
+export default middleware
